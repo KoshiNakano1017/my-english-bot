@@ -1,26 +1,28 @@
-import google.generativeai as genai
+from google import genai
 import os
 import subprocess
 
-genai.configure(api_key=os.environ["GEMINI_API_KEY"])
-model = genai.GenerativeModel("gemini-2.0-flash")
+client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
 
-# 今回のPushでの変更点(Diff)を取得
+# 差分の取得（極限まで絞る：500文字）
 diff = subprocess.getoutput("git diff HEAD~1 HEAD")
+diff_limited = diff[:500] + "..." if len(diff) > 500 else diff
 
-prompt = f"""
-あなたはシニアエンジニアです。以下のコードの差分をレビューしてください。
-1. PEP8などのコーディング規約に則っているか
-2. ロジックのバグや、音声処理の不備がないか
-3. より良い書き方（自然なPythonの書き方）があれば提案
+# 試行するモデルの優先順位（2026年現在の有効なID）
+models_to_try = ['gemini-2.0-flash-exp', 'gemini-2.0-flash', 'gemini-1.5-flash-8b']
 
-Diff:
-{diff}
-"""
+success = False
+for model_id in models_to_try:
+    try:
+        response = client.models.generate_content(
+            model=model_id,
+            contents=f"Review this code briefly: {diff_limited}"
+        )
+        print(f"=== AI Review ({model_id}) ===\n{response.text}")
+        success = True
+        break
+    except Exception as e:
+        print(f"Skipping {model_id}: Quota or error.")
 
-if diff:
-    response = model.generate_content(prompt)
-    print("=== Gemini AI Review Results ===")
-    print(response.text)
-else:
-    print("No changes to review.")
+if not success:
+    print("All models failed. Quota might be reset tomorrow.")
