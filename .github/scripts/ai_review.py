@@ -1,28 +1,37 @@
-from google import genai
 import os
 import subprocess
+import sys
+
+# インストール直後のライブラリを確実に読み込むためのインポート
+try:
+    from google import genai
+except ImportError:
+    print("Error: google-genai not found. Check installation.")
+    sys.exit(1)
 
 client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
 
 # 差分の取得（極限まで絞る：500文字）
 diff = subprocess.getoutput("git diff HEAD~1 HEAD")
-diff_limited = diff[:500] + "..." if len(diff) > 500 else diff
+diff = subprocess.getoutput("git diff HEAD~1 HEAD")
+if not diff:
+    print("No changes to review.")
+    sys.exit(0)
 
-# 試行するモデルの優先順位（2026年現在の有効なID）
-models_to_try = ['gemini-2.0-flash-exp', 'gemini-2.0-flash', 'gemini-1.5-flash-8b']
+diff_limited = diff[:500] + "\n...(truncated)" if len(diff) > 500 else diff
 
-success = False
-for model_id in models_to_try:
-    try:
-        response = client.models.generate_content(
-            model=model_id,
-            contents=f"Review this code briefly: {diff_limited}"
-        )
-        print(f"=== AI Review ({model_id}) ===\n{response.text}")
-        success = True
-        break
-    except Exception as e:
-        print(f"Skipping {model_id}: Quota or error.")
+prompt = f"""
+Briefly review this code for PEP8 and logic bugs:
+{diff_limited}
+"""
 
-if not success:
-    print("All models failed. Quota might be reset tomorrow.")
+try:
+    # 2.0-flash-lite は現在最も制限が緩いモデルです
+    response = client.models.generate_content(
+        model='gemini-2.0-flash-lite',
+        contents=prompt
+    )
+    print("=== AI Review ===\n" + response.text)
+except Exception as e:
+    # 制限（429）やエラーが出てもCIを失敗させない
+    print(f"Skipped review: {e}")
