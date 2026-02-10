@@ -3,7 +3,7 @@ import os
 import subprocess
 
 genai.configure(api_key=os.environ["GEMINI_API_KEY"])
-model = genai.GenerativeModel("gemini-1.5-flash")
+model = genai.GenerativeModel("gemini-2.0-flash")
 
 # 今回のPushでの変更点(Diff)を取得
 diff = subprocess.getoutput("git diff HEAD~1 HEAD")
