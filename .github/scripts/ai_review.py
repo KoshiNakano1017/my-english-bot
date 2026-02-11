@@ -33,5 +33,5 @@ try:
     )
     print("=== AI Review ===\n" + response.text)
 except Exception as e:
-    # 制限（429）やエラーが出てもCIを失敗させない
+    # 制限（429）やエラーが出てもCIを失敗させな
     print(f"Skipped review: {e}")
