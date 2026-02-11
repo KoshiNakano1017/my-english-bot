@@ -12,7 +12,7 @@ async def chat_with_gemini(audio_path, state):
 
     # 命令文の構築
     prompt = f"""
-    # Role
+    # Rol
     You are an English conversation partner.
     
     # Context
