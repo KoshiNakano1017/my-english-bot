@@ -28,7 +28,7 @@ Briefly review this code for PEP8 and logic bugs:
 try:
     # 2.0-flash-lite は現在最も制限が緩いモデルです
     response = client.models.generate_content(
-        model='gemini-1.5-flash-8b',
+        model='gemini-3-flash',
         contents=prompt
     )
     print("=== AI Review ===\n" + response.text)
