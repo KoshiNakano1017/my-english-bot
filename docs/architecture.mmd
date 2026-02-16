@@ -1,0 +1,25 @@
+graph TD
+  subgraph ユーザー
+    U1[Telegramユーザー]
+  end
+  subgraph Telegram
+    TG[Telegram Bot API]
+  end
+  subgraph サービス
+    TB[telegram_bot.py]
+    SM[state_manager.py]
+    GA[gemini_api.py]
+    AH[audio_handler.py]
+  end
+  subgraph データ
+    UW[user_words.json]
+  end
+
+  U1 --> TG
+  TG --> TB
+  TB --> SM
+  TB --> AH
+  TB --> GA
+  SM --> UW
+  AH --> TB
+  GA --> TB
