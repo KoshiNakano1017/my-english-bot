@@ -7,7 +7,7 @@ async def chat_with_gemini(audio_path, state):
     model = genai.GenerativeModel('gemini-2.0-flash')
     
     turn_count = state["turn_count"]
-    # 10回に1回のアドバイスフラグaaaaaaadoudususu
+    # 10回に1回のアドバイスフラグaa
     give_advice = (turn_count % 10 == 0)
 
     # 命令文の構築
