@@ -10,7 +10,6 @@ except ImportError:
     sys.exit(1)
 
 client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
-GEMINI_MODEL_NAME = os.environ.get("GEMINI_MODEL_NAME", "gemini-2.0-flash")
 
 # 差分の取得（極限まで絞る：500文字）
 diff = subprocess.getoutput("git diff HEAD~1 HEAD")
@@ -27,12 +26,12 @@ Briefly review this code for PEP8 and logic bugs:
 """
 
 try:
-    # モデル名は環境変数から取得
+    # 2.0-flash-lite は現在最も制限が緩いモデルです
     response = client.models.generate_content(
-        model=GEMINI_MODEL_NAME,
+        model='gemini-2.0-flash',
         contents=prompt
     )
     print("=== AI Review ===\n" + response.text)
 except Exception as e:
-    # 制限（429）やエラーが出てもCIを失敗させない
+    # 制限（429）やエラーが出てもCIを失敗させな
     print(f"Skipped review: {e}")
