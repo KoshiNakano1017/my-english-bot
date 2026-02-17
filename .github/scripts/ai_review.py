@@ -2,7 +2,7 @@ import os
 import subprocess
 import sys
 
-# インストール直後のライブラリを確実に読み込むためのインポート
+# インストール直後のライブラリを確実に読み込むためのインポー
 try:
     from google import genai
 except ImportError:
