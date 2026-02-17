@@ -1,4 +1,4 @@
-# ユーザーデータを保持辞書
+# ユーザーデータするを保持辞書
 # { user_id: {"situation": str, "target_vocab": list, "turn_count": int} }
 user_states = {}
 
@@ -19,5 +19,5 @@ def increment_turn(user_id):
     state = get_state(user_id)
     state["turn_count"] += 1
     if state["turn_count"] > 10:
-        state["turn_count"] = 1 # アドバイス後は1にリセット
+        state["turn_count"] = 1 # アドバイス後は1にリセ
     return state["turn_count"]

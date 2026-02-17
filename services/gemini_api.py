@@ -4,7 +4,7 @@ from config import GEMINI_API_KEY
 genai.configure(api_key=GEMINI_API_KEY)
 
 async def chat_with_gemini(audio_path, state):
-    model = genai.GenerativeModel('gemini-1.5-flash')
+    model = genai.GenerativeModel('gemini-2.0-flash')
     
     turn_count = state["turn_count"]
     # 10回に1回のアドバイスフラグaaaaaaadoudususu
