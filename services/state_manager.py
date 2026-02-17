@@ -1,4 +1,4 @@
-# ユーザーデータを保持する辞書
+# ユーザーデータを保持辞書
 # { user_id: {"situation": str, "target_vocab": list, "turn_count": int} }
 user_states = {}
 
