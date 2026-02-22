@@ -19,5 +19,18 @@ def increment_turn(user_id):
     state = get_state(user_id)
     state["turn_count"] += 1
     if state["turn_count"] > 10:
-        state["turn_count"] = 1 # アドバイス後は1にリセ
+        state["turn_count"] = 1 # アドバイス後は1にリセット
     return state["turn_count"]
+
+# --- Backward-compatible API (used by main.py) ---
+def get_user_state(user_id):
+    return get_state(user_id)
+
+def update_user_setting(user_id, situation=None, target_vocab=None):
+    updates = {}
+    if situation is not None:
+        updates["situation"] = situation
+    if target_vocab is not None:
+        updates["target_vocab"] = target_vocab
+    if updates:
+        update_state(user_id, **updates)
