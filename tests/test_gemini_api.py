@@ -1,11 +1,5 @@
-# テスト: Gemini API
+import services.gemini_api as gemini_api
 
-import unittest
-from services.gemini_api import *
 
-class TestGeminiAPI(unittest.TestCase):
-    def test_dummy(self):
-        self.assertTrue(True)
-
-if __name__ == "__main__":
-    unittest.main()
+def test_gemini_api_exports():
+    assert hasattr(gemini_api, "chat_with_gemini")

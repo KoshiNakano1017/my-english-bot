@@ -1,9 +1,11 @@
 import google.generativeai as genai
 from config import GEMINI_API_KEY
 
+from services.types import UserState
+
 genai.configure(api_key=GEMINI_API_KEY)
 
-async def chat_with_gemini(audio_path, state):
+async def chat_with_gemini(audio_path: str, state: UserState) -> str:
     model = genai.GenerativeModel('gemini-2.0-flash')
     
     turn_count = state["turn_count"]

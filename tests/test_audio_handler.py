@@ -1,11 +1,6 @@
-# テスト: Audio Handler
+import utils.audio_handler as audio_handler
 
-import unittest
-from utils.audio_handler import *
 
-class TestAudioHandler(unittest.TestCase):
-    def test_dummy(self):
-        self.assertTrue(True)
-
-if __name__ == "__main__":
-    unittest.main()
+def test_audio_handler_exports():
+    assert hasattr(audio_handler, "download_voice")
+    assert hasattr(audio_handler, "cleanup_voice")

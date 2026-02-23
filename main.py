@@ -4,20 +4,25 @@ from utils import audio_handler
 
 app = FastAPI()
 
+
 @app.post("/webhook")
 async def handle_webhook(request: Request):
     data = await request.json()
-    if "message" not in data: return {"status": "ok"}
-    
+    if "message" not in data:
+        return {"status": "ok"}
+
     msg = data["message"]
     user_id = msg["from"]["id"]
 
     # 設定変更 (Text)
     if "text" in msg:
         sit, voc = telegram_bot.parse_settings(msg["text"])
-        if sit or voc:
+        if sit is not None or voc:
             state_manager.update_user_setting(user_id, sit, voc)
-            await telegram_bot.send_message(user_id, f"✅ Settings Saved!\nNow in: {sit}")
+            state = state_manager.get_user_state(user_id)
+            await telegram_bot.send_message(
+                user_id, f"✅ Settings Saved!\nNow in: {state['situation']}"
+            )
         return {"status": "ok"}
 
     # 英会話 (Voice)

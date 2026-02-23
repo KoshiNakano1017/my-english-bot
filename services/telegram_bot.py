@@ -2,7 +2,7 @@ import httpx
 from config import TELEGRAM_BOT_TOKEN
 
 # メッセージを送信する共通関数
-async def send_message(chat_id: int, text: str):
+async def send_message(chat_id: int, text: str) -> None:
     url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
     payload = {
         "chat_id": chat_id,
@@ -13,7 +13,7 @@ async def send_message(chat_id: int, text: str):
         await client.post(url, json=payload)
 
 # テキストメッセージから設定を読み取るロジック
-def parse_settings(text: str):
+def parse_settings(text: str) -> tuple[str | None, list[str]]:
     situation = None
     keywords = []
     

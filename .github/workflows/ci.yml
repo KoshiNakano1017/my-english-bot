@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install ruff mypy pytest pip-audit bandit
+
+      - name: Lint (ruff)
+        run: ruff check .
+
+      - name: Type check (mypy)
+        run: mypy main.py services utils
+
+      - name: Tests (pytest)
+        run: pytest -q
+
+      - name: Byte-compile
+        run: python -m compileall .
+
+      - name: Smoke import
+        run: |
+          python -c "import main; assert hasattr(main, 'app')"
+          python -c "from services import state_manager; s = state_manager.get_user_state(1); assert 'situation' in s and 'turn_count' in s"
+
+      - name: Dependency vulnerabilities (pip-audit)
+        run: pip-audit -r requirements.txt
+
+      - name: Static security scan (bandit)
+        run: bandit -r . -x ".venv,tests,.github" -ll

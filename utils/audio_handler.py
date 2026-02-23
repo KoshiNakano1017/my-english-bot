@@ -2,7 +2,7 @@ import httpx
 import os
 from config import TELEGRAM_BOT_TOKEN
 
-async def download_voice(file_id: str, user_id: int):
+async def download_voice(file_id: str, user_id: int) -> str:
     dest_path = f"temp_{user_id}.ogg"
     
     # 1. TelegramからURLを取得
@@ -19,6 +19,6 @@ async def download_voice(file_id: str, user_id: int):
             
     return dest_path
 
-def cleanup_voice(path: str):
+def cleanup_voice(path: str) -> None:
     if os.path.exists(path):
         os.remove(path)

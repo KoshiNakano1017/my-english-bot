@@ -1,8 +1,13 @@
-# ユーザーデータするを保持辞書
-# { user_id: {"situation": str, "target_vocab": list, "turn_count": int} }
-user_states = {}
+from __future__ import annotations
 
-def get_state(user_id):
+from services.types import UserState
+
+# ユーザーデータを保持する辞書
+# { user_id: {"situation": str, "target_vocab": list, "turn_count": int} }
+user_states: dict[int, UserState] = {}
+
+
+def get_state(user_id: int) -> UserState:
     if user_id not in user_states:
         user_states[user_id] = {
             "situation": "Casual conversation",
@@ -11,11 +16,23 @@ def get_state(user_id):
         }
     return user_states[user_id]
 
-def update_state(user_id, **kwargs):
+def update_state(
+    user_id: int,
+    *,
+    situation: str | None = None,
+    target_vocab: list[str] | None = None,
+    turn_count: int | None = None,
+) -> None:
     state = get_state(user_id)
-    state.update(kwargs)
+    if situation is not None:
+        state["situation"] = situation
+    if target_vocab is not None:
+        state["target_vocab"] = target_vocab
+    if turn_count is not None:
+        state["turn_count"] = turn_count
 
-def increment_turn(user_id):
+
+def increment_turn(user_id: int) -> int:
     state = get_state(user_id)
     state["turn_count"] += 1
     if state["turn_count"] > 10:
@@ -23,14 +40,14 @@ def increment_turn(user_id):
     return state["turn_count"]
 
 # --- Backward-compatible API (used by main.py) ---
-def get_user_state(user_id):
+
+def get_user_state(user_id: int) -> UserState:
     return get_state(user_id)
 
-def update_user_setting(user_id, situation=None, target_vocab=None):
-    updates = {}
-    if situation is not None:
-        updates["situation"] = situation
-    if target_vocab is not None:
-        updates["target_vocab"] = target_vocab
-    if updates:
-        update_state(user_id, **updates)
+
+def update_user_setting(
+    user_id: int,
+    situation: str | None = None,
+    target_vocab: list[str] | None = None,
+) -> None:
+    update_state(user_id, situation=situation, target_vocab=target_vocab)

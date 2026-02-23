@@ -1,11 +1,7 @@
-# テスト: Telegram Bot
+import services.telegram_bot as telegram_bot
 
-import unittest
-from services.telegram_bot import *
 
-class TestTelegramBot(unittest.TestCase):
-    def test_dummy(self):
-        self.assertTrue(True)
-
-if __name__ == "__main__":
-    unittest.main()
+def test_parse_settings_parses_both_fields():
+    sit, keywords = telegram_bot.parse_settings("Situation: Cafe\nKeywords: a, b, c")
+    assert sit == "Cafe"
+    assert keywords == ["a", "b", "c"]
